@@ -38,6 +38,7 @@ function gpgencrypter_info()
     "authorsite"    => "https://github.com/Ardaemon",
     "version"        => "1.0",
     "guid"             => "",
+    "codename"         => "GPGEncrypter",
     "compatibility" => "18*"
   )
 }
@@ -51,6 +52,8 @@ function gpgencrypter_install()
   
   if(!$db->field_exists('encrypted', 'privatemessages'))
     $db->write_query("ALTER TABLE `".TABLE_PREFIX."privatemessages` ADD `encrypted` int(1);");
+  
+  
 }
 
 function gpgencrypter_is_installed()
@@ -73,6 +76,16 @@ function gpgencrypter_uninstall()
   
   if($db->field_exists('encrypted', 'privatemessages'))
     $db->write_query("ALTER TABLE `".TABLE_PREFIX."privatemessages` DROP `encrypted`;");
+}
+
+function gpgencrypter_activate()
+{
+
+}
+
+function gpgencrypter_deactivate()
+{
+
 }
 
 function gpgencrypter_insert_pubkey($pubkey, $uid)
