@@ -3,7 +3,9 @@
 /* Encrypt MyBB users' private messages with GnuPG
 
 * v. 1.0
-* Coded by Ardaemon
+***********************
+***Coded by Ardaemon***
+***********************
 * Website: https://github.com/Ardaemon
 
 This program is free software: you can redistribute it and/or modify
@@ -46,6 +48,9 @@ function gpgencrypter_install()
   
   if(!$db->field_exists('pgp_public_key', 'users'))
     $db->write_query("ALTER TABLE `".TABLE_PREFIX."users` ADD `pgp_public_key` text;");
+  
+  if(!$db->field_exists('encrypted', 'privatemessages'))
+    $db->write_query("ALTER TABLE `".TABLE_PREFIX."privatemessages` ADD `encrypted` int(1);");
 }
 
 function gpgencrypter_is_installed()
@@ -65,6 +70,9 @@ function gpgencrypter_uninstall()
 
   if($db->field_exists('pgp_public_key', 'users'))
     $db->write_query("ALTER TABLE `".TABLE_PREFIX."users` DROP `pgp_public_key`;");
+  
+  if($db->field_exists('encrypted', 'privatemessages'))
+    $db->write_query("ALTER TABLE `".TABLE_PREFIX."privatemessages` DROP `encrypted`;");
 }
 
 function gpgencrypter_insert_pubkey($pubkey, $uid)
@@ -103,3 +111,5 @@ function gpgencrypter_encrypt_message($fingerprint, $message)
 
   return $encmessage;
 }
+
+?>
