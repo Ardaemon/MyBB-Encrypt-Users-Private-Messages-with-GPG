@@ -64,7 +64,7 @@ function gpgencrypter_uninstall()
   global $db;
 
   if($db->field_exists('pgp_public_key', 'users'))
-    $db->("ALTER TABLE `".TABLE_PREFIX."users` DROP `pgp_public_key`;");
+    $db->write_query("ALTER TABLE `".TABLE_PREFIX."users` DROP `pgp_public_key`;");
 }
 
 function gpgencrypter_insert_pubkey($pubkey, $uid)
