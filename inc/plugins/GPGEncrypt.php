@@ -40,7 +40,7 @@ function gpgencrypter_info()
   )
 }
 
-funtion gpgencrypter_install()
+function gpgencrypter_install()
 {
   global $db;
   
@@ -59,7 +59,7 @@ function gpgencrypter_is_installed()
     return false;
 }
 
-function gpgencryter_uninstall()
+function gpgencrypter_uninstall()
 {
   global $db;
 
@@ -67,15 +67,24 @@ function gpgencryter_uninstall()
     $db->("ALTER TABLE `".TABLE_PREFIX."users` DROP `pgp_public_key`;");
 }
 
-/*
-function get_user_pubkey($uid)
+function gpgencrypter_insert_pubkey($pubkey, $uid)
 {
   global $db;
-
-  $query = $db->query("SELECT `pgp_public_key` FROM `".TABLE_PREFIX."users WHERE uid=".$intval($uid));
-  return $db->write_query($query);
+  
+  $db->update_query('users', 'pgp_public_key='.$pubkey.', uid='.intval($uid));
 }
-*/
+
+function gpgencrypter_get_user_pubkey($uid)
+{
+  global $db;
+  
+  $query = $db->simple_select('users', '*', 'uid='.intval($uid));
+  
+  if(!$db->fetch_field($query, 'pgp_public_key')
+     die('This user has not set a PGP Public Key');
+  else
+     return $db->fetch_field($query, 'pgp_public_key');
+}
 
 function gpgencrypter_get_fingerprint($pubkey)
 {
@@ -85,12 +94,12 @@ function gpgencrypter_get_fingerprint($pubkey)
   return $importedkey['fingerprint'];
 }
 
-function gpgencryter_encrypt_message($fingerprint, $message)
+function gpgencrypter_encrypt_message($fingerprint, $message)
 {
   $gpg = new gnupg();
 
   $gpg->addencryptkey($fingerprint);
   $encmessage = $gpg->encrypt($message);
 
-  return $message
+  return $message;
 }
