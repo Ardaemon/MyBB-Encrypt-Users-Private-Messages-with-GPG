@@ -101,5 +101,5 @@ function gpgencrypter_encrypt_message($fingerprint, $message)
   $gpg->addencryptkey($fingerprint);
   $encmessage = $gpg->encrypt($message);
 
-  return $message;
+  return $encmessage;
 }
