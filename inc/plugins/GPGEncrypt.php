@@ -40,7 +40,7 @@ function gpgencrypter_info()
     "guid"             => "",
     "codename"         => "GPGEncrypter",
     "compatibility" => "18*"
-  )
+  );
 }
 
 function gpgencrypter_install()
@@ -48,11 +48,14 @@ function gpgencrypter_install()
   global $db;
   
   if(!$db->field_exists('pgp_public_key', 'users'))
+  {
     $db->write_query("ALTER TABLE `".TABLE_PREFIX."users` ADD `pgp_public_key` text;");
+  }
   
   if(!$db->field_exists('encrypted', 'privatemessages'))
-    $db->write_query("ALTER TABLE `".TABLE_PREFIX."privatemessages` ADD `encrypted` int(1);");
-  
+  {
+    $db->write_query("ALTER TABLE `".TABLE_PREFIX."privatemessages` ADD `encrypted` int(1);"); 
+  }
   
 }
 
@@ -61,10 +64,15 @@ function gpgencrypter_is_installed()
   global $db;
   
   if($db->field_exists('pgp_public_key', 'users'))
+  {
     return true;
+  }
 
   else
+  {
     return false;
+  }
+  
 }
 
 function gpgencrypter_uninstall()
@@ -72,11 +80,18 @@ function gpgencrypter_uninstall()
   global $db;
 
   if($db->field_exists('pgp_public_key', 'users'))
+  {
     $db->write_query("ALTER TABLE `".TABLE_PREFIX."users` DROP `pgp_public_key`;");
+  }
   
   if($db->field_exists('encrypted', 'privatemessages'))
+  {
     $db->write_query("ALTER TABLE `".TABLE_PREFIX."privatemessages` DROP `encrypted`;");
+  }
+  
 }
+
+/*
 
 function gpgencrypter_activate()
 {
@@ -87,6 +102,8 @@ function gpgencrypter_deactivate()
 {
 
 }
+
+*/
 
 function gpgencrypter_insert_pubkey($pubkey, $uid)
 {
@@ -101,8 +118,8 @@ function gpgencrypter_get_user_pubkey($uid)
   
   $query = $db->simple_select('users', '*', 'uid='.intval($uid));
   
-  if(!$db->fetch_field($query, 'pgp_public_key')
-     die('This user has not set a PGP Public Key');
+  if(!$db->fetch_field($query, 'pgp_public_key'))
+     die("This user has not set a PGP Public Key");
   else
      return $db->fetch_field($query, 'pgp_public_key');
 }
